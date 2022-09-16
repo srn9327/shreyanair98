@@ -1,33 +1,76 @@
-### welcome_assignment_answers
-### Input - All eight questions given in the assignment.
-### Output - The right answer for the specific question.
+"""""
+import socket
+print (socket.gethostbyname(socket.gethostname()))
+192.168.56.1
 
-def welcome_assignment_answers(question):
-    #The student doesn't have to follow the skeleton for this assignment.
-    #Another way to implement is using a "case" statements similar to C.
-    if question == "In Slack, what is the secret passphrase posted in the #lab-python-getting-started channel posted by a TA?":
-        answer = "mtls"
-    elif question == "Are encoding and encryption the same? - Yes/No":
-        answer = "No"
-    elif question == "Is it possible to decrypt a message without a key? - Yes/No":
-        answer = "No"
-    elif question == "Is it possible to decode a message without a key? - Yes/No":
-        answer = "Yes"
-    elif question == "Is a hashed message supposed to be un-hashed? - Yes/No":
-        answer = "No"
-    elif question == "What is the SHA1 hashing value to the following message: 'NYU Computer Networking' - Use SHA1 hash generator and use the answer in your code":
-        answer = "8496abe9fceb5aa927e28bfbd9a2347d1290ef9b"
-    elif question == "Is MD5 a secured hashing algorithm? - Yes/No":
-        answer = "No"
-    elif question == "What layer of the TCP/IP model does the protocol DNS belong to? - The answer should be an integer number":
-        answer = int(5)
-    elif question == "What layer of the TCP/IP model does the protocol ICMP belong to? - The answer should be an integer number":
-        answer = int(3)
-    return(answer)
-# Complete all the questions.
+"""""
+
+# import socket module
+from socket import *
+# In order to terminate the program
+import sys
+
+
+def webServer(port=13331):
+    serverSocket = socket(AF_INET, SOCK_STREAM)
+
+    # Prepare a server socket
+    serverSocket.bind(('192.168.56.1', port))
+
+    # Fill in start
+    serverSocket.listen(1)
+    print('the web server is up on port:', port)
+    # Fill in end
+
+    while True:
+        # Establish the connection
+
+        print('Ready to serve...')
+        connectionSocket, addr = serverSocket.accept() # Fill in start -are you accepting connections?     #Fill in end
+
+        try:
+            message = connectionSocket.recv(1024) # Fill in start -a client is sending you a message   #Fill in end
+            filename = message.split()[1]
+
+            # opens the client requested file.
+            # Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
+            f = open(filename[1:])# fill in start #fill in end)
+
+
+            outputdata= f.read()
+            print(outputdata)
+                    # Fill in start -This variable can store your headers you want to send for any valid or invalid request.
+            # Content-Type above is an example on how to send a header as bytes
+            # Fill in end
+
+            # Send an HTTP header line into socket for a valid request. What header should be sent for a response that is ok?
+            # Fill in start
+            connectionSocket.send('\nHTTP/1.1 200 OK\n\n'.encode())
+            # Fill in end
+
+            # Send the content of the requested file to the client
+            for i in f:  # for line in file
+            # Fill in start - send your html file contents
+                connectionSocket.send(outputdata[i].encode())
+            # #Fill in end
+            connectionSocket.send("\r\n".encode())
+            connectionSocket.close()  # closing the connection socket
+
+        except Exception as e:
+    # Send response message for invalid request due to the file not being found (404)
+    # Fill in start
+            connectionSocket.send("\nHTTP/1.1 404 Not Found\n\n".encode())
+    # Fill in end
+
+    # Close client socket
+    # Fill in start
+            connectionSocket.close()
+    # Fill in end
+
+    serverSocket.close()
+    sys.exit()  # Terminate the program after sending the corresponding data
 
 
 if __name__ == "__main__":
-    #use this space to debug and verify that the program works
-    debug_question = "What layer of the TCP/IP model does the protocol ICMP belong to? - The answer should be an integer number"
-    print(welcome_assignment_answers(debug_question))
+    webServer(13331)
+
