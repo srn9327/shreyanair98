@@ -45,7 +45,7 @@ def webServer(port=13331):
 
             # Send an HTTP header line into socket for a valid request. What header should be sent for a response that is ok?
             # Fill in start
-            connectionSocket.send('HTTP/1.1 200 OK\n'.encode())
+            connectionSocket.send('\nHTTP/1.1 200 OK\n\n'.encode())
             # Fill in end
 
             # Send the content of the requested file to the client
@@ -59,7 +59,7 @@ def webServer(port=13331):
         except Exception as e:
     # Send response message for invalid request due to the file not being found (404)
     # Fill in start
-            connectionSocket.send("HTTP/1.1 404 Not Found\n".encode())
+            connectionSocket.send("\nHTTP/1.1 404 Not Found\n\n".encode())
     # Fill in end
 
     # Close client socket
